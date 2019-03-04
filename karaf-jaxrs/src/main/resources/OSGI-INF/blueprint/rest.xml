@@ -31,9 +31,10 @@
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref component-id="jsonProvider" />
+			<ref component-id="shiroFeature" />
 		</jaxrs:providers>
 		<jaxrs:features>
-			<!--<ref component-id="shiroFeature" />-->
+
 		</jaxrs:features>
 	</jaxrs:server>
 
