@@ -43,7 +43,7 @@
         <junit.version>5.3.1</junit.version>
         <surefire.log.level>INFO</surefire.log.level>
 
-	    <shiro.version>1.4.1-SNAPSHOT</shiro.version>
+	    <shiro.version>1.4.0</shiro.version>
         <cxf.version>3.2.7</cxf.version>
         <johnzon.version>1.1.8</johnzon.version>
         <jsonspec.version>1.0</jsonspec.version>
