@@ -16,4 +16,8 @@
     specific language governing permissions and limitations
     under the License.
 -->
-# shiro-labs
+# Apache Shiro labs
+
+This project is an example to show how to use Apache Shiro for a set of common use cases.
+
+
