@@ -45,8 +45,8 @@
 
 	    <shiro.version>1.4.1</shiro.version>
         <cxf.version>3.2.7</cxf.version>
-        <johnzon.version>1.1.8</johnzon.version>
-        <jsonspec.version>1.0</jsonspec.version>
+        <johnzon.version>1.1.11</johnzon.version>
+        <geronimo.jsonspec.version>1.2</geronimo.jsonspec.version>
         <javax.ws.rs>2.1.1</javax.ws.rs>
         <smx.bundle.commons-beanutil.version>1.8.3_2</smx.bundle.commons-beanutil.version>
     </properties>
@@ -178,7 +178,7 @@
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-json_1.1_spec</artifactId>
-                <version>${jsonspec.version}</version>
+                <version>${geronimo.jsonspec.version}</version>
             </dependency>
 
             <!-- SLF4J -->
