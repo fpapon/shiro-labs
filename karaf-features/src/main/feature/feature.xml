@@ -25,9 +25,10 @@
 		<bundle dependency="true">mvn:org.apache.johnzon/johnzon-jaxrs/${johnzon.version}</bundle>
 		<bundle dependency="true">mvn:org.apache.johnzon/johnzon-mapper/${johnzon.version}</bundle>
 		<bundle dependency="true">mvn:org.apache.johnzon/johnzon-core/${johnzon.version}</bundle>
-		<bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-json_1.1_spec/${jsonspec.version}</bundle>
+		<bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-json_1.1_spec/${geronimo.jsonspec.version}</bundle>
 		<bundle dependency="true">mvn:org.apache.shiro/shiro-jaxrs/${shiro.version}</bundle>
-		<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-beanutils/${smx.bundle.commons-beanutil.version}</bundle>
+		<bundle dependency="true">mvn:commons-collections/commons-collections/3.2.2</bundle>
+		<bundle dependency="true">mvn:commons-beanutils/commons-beanutils/1.9.3</bundle>
 
         <bundle>mvn:fr.openobject.shiro.labs/karaf-jaxrs/${project.version}</bundle>
 	</feature>
