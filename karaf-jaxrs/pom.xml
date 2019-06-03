@@ -46,6 +46,10 @@
             <artifactId>javax.ws.rs-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
         </dependency>
@@ -77,6 +81,7 @@
                 <configuration>
                     <instructions>
                         <Import-Package>
+                            org.apache.shiro.web.session.mgt,
                             *
                         </Import-Package>
                     </instructions>

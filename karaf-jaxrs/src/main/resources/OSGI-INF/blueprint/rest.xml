@@ -23,6 +23,7 @@
 
 	<bean id="protectedRestBean" class="fr.openobject.labs.shiro.karaf.jaxrs.ProtectedService" />
 	<bean id="shiroFeature" class="org.apache.shiro.web.jaxrs.ShiroFeature" />
+	<bean id="shiroFilter" class="org.apache.shiro.web.servlet.ShiroFilter" />
 
 
 	<jaxrs:server id="restServer" address="/shiro-jaxrs">
@@ -32,6 +33,7 @@
 		<jaxrs:providers>
 			<ref component-id="jsonProvider" />
 			<ref component-id="shiroFeature" />
+			<ref component-id="shiroFilter" />
 		</jaxrs:providers>
 		<jaxrs:features>
 
