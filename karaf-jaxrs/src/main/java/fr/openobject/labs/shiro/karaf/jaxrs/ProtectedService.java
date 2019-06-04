@@ -29,6 +29,7 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresGuest;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 
 @Path("/")
@@ -46,15 +47,15 @@ public class ProtectedService {
 
         Subject subject = SecurityUtils.getSubject();
         subject.login(token);
-        return subject.getPrincipal().toString();
+
+        return SecurityUtils.getSubject().getPrincipal().toString();
     }
 
     @Path("infos")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
+    @RequiresRoles("admin")
     public Response getInfos() {
-        Subject subject = SecurityUtils.getSubject();
-        subject.isAuthenticated();
         Map<String, String> infos = new HashMap<>();
         infos.put("key1", "value1");
         return Response.ok(infos).build();

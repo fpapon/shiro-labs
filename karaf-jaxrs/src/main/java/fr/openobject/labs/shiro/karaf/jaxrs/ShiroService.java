@@ -19,11 +19,8 @@ package fr.openobject.labs.shiro.karaf.jaxrs;
 import javax.servlet.ServletContext;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.config.Ini;
-import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.web.env.EnvironmentLoader;
 import org.apache.shiro.web.env.IniWebEnvironment;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.session.mgt.ServletContainerSessionManager;
 import org.apache.shiro.web.util.WebUtils;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -46,17 +43,11 @@ public class ShiroService {
         this.environment = new IniWebEnvironment();
         environment.setIni(ini);
         environment.setServletContext(servletContext);
-
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-
-        ServletContainerSessionManager sessionManager = new ServletContainerSessionManager();
-        ((SessionsSecurityManager) securityManager).setSessionManager(sessionManager);
-
         environment.init();
 
         SecurityUtils.setSecurityManager(environment.getWebSecurityManager());
         servletContext.setAttribute(EnvironmentLoader.ENVIRONMENT_ATTRIBUTE_KEY, environment);
-        WebUtils.getWebEnvironment(servletContext);
+        WebUtils.getWebEnvironment(servletContext).getWebSecurityManager().isHttpSessionMode();
     }
 
     @Deactivate
