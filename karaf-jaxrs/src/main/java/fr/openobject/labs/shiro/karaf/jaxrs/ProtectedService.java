@@ -40,6 +40,7 @@ public class ProtectedService {
     @GET
     @RequiresGuest
     public String getToken(@HeaderParam("Authorization") String authorization) {
+        authorization = "root:secret";
         AuthenticationToken token = new UsernamePasswordToken();
         ((UsernamePasswordToken) token).setUsername(authorization.split(":")[0]);
         ((UsernamePasswordToken) token).setPassword(authorization.split(":")[1].toCharArray());
@@ -48,7 +49,7 @@ public class ProtectedService {
         Subject subject = SecurityUtils.getSubject();
         subject.login(token);
 
-        return SecurityUtils.getSubject().getPrincipal().toString();
+        return SecurityUtils.getSubject().getSession().getId().toString();
     }
 
     @Path("infos")

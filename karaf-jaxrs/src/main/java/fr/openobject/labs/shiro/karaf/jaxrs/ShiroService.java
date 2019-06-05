@@ -27,9 +27,13 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
 public class ShiroService {
+
+    private Logger logger = LoggerFactory.getLogger(ShiroService.class);
 
     IniWebEnvironment environment;
 
@@ -47,7 +51,9 @@ public class ShiroService {
 
         SecurityUtils.setSecurityManager(environment.getWebSecurityManager());
         servletContext.setAttribute(EnvironmentLoader.ENVIRONMENT_ATTRIBUTE_KEY, environment);
-        WebUtils.getWebEnvironment(servletContext).getWebSecurityManager().isHttpSessionMode();
+        //servletContext.addFilter("shiroFilter", ShiroFilter.class);
+        logger.info(servletContext.getServerInfo());
+        logger.info(String.valueOf(WebUtils.getWebEnvironment(servletContext).getWebSecurityManager().isHttpSessionMode()));
     }
 
     @Deactivate
