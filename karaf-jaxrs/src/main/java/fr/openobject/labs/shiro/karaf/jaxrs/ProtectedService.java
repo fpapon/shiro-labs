@@ -25,26 +25,29 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/")
 public class ProtectedService {
+
+    private Logger logger = LoggerFactory.getLogger(ProtectedService.class);
 
     @Path("token")
     @Produces(MediaType.TEXT_PLAIN)
     @GET
     @RequiresGuest
     public String getToken(@HeaderParam("Authorization") String authorization) {
-        authorization = "root:secret";
         AuthenticationToken token = new UsernamePasswordToken();
-        ((UsernamePasswordToken) token).setUsername(authorization.split(":")[0]);
-        ((UsernamePasswordToken) token).setPassword(authorization.split(":")[1].toCharArray());
-        AuthenticationInfo authenticationInfo = SecurityUtils.getSecurityManager().authenticate(token);
+        UsernamePasswordToken.class.cast(token).setUsername(authorization.split(":")[0]);
+        UsernamePasswordToken.class.cast(token).setPassword(authorization.split(":")[1].toCharArray());
+        UsernamePasswordToken.class.cast(token).setRememberMe(true);
+        SecurityUtils.getSecurityManager().authenticate(token);
 
         Subject subject = SecurityUtils.getSubject();
         subject.login(token);
@@ -58,7 +61,10 @@ public class ProtectedService {
     @RequiresRoles("admin")
     public Response getInfos() {
         Map<String, String> infos = new HashMap<>();
-        infos.put("key1", "value1");
+        Subject subject = SecurityUtils.getSubject();
+        infos.put("is-authenticated", String.valueOf(subject.isAuthenticated()));
+        infos.put("user-principal", subject.getPrincipal().toString());
+        infos.put("session-id", SecurityUtils.getSubject().getSession().getId().toString());
         return Response.ok(infos).build();
     }
 }

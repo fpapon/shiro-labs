@@ -21,7 +21,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.web.env.EnvironmentLoader;
 import org.apache.shiro.web.env.IniWebEnvironment;
-import org.apache.shiro.web.util.WebUtils;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -44,16 +45,18 @@ public class ShiroService {
     public void activate(ComponentContext componentContext) throws Exception {
 
         Ini ini = Ini.fromResourcePath(System.getProperty("karaf.etc") + "/shiro.ini");
+
         this.environment = new IniWebEnvironment();
         environment.setIni(ini);
         environment.setServletContext(servletContext);
         environment.init();
 
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setSessionIdUrlRewritingEnabled(true);
+        DefaultWebSecurityManager.class.cast(environment.getWebSecurityManager()).setSessionManager(sessionManager);
         SecurityUtils.setSecurityManager(environment.getWebSecurityManager());
         servletContext.setAttribute(EnvironmentLoader.ENVIRONMENT_ATTRIBUTE_KEY, environment);
-        //servletContext.addFilter("shiroFilter", ShiroFilter.class);
         logger.info(servletContext.getServerInfo());
-        logger.info(String.valueOf(WebUtils.getWebEnvironment(servletContext).getWebSecurityManager().isHttpSessionMode()));
     }
 
     @Deactivate
