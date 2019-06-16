@@ -13,10 +13,50 @@
     <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
 	<repository>mvn:org.apache.shiro/shiro-features/${shiro.version}/xml/features</repository>
 
+	<feature name="shiro-datasource" version="${project.version}"
+			 description="Shiro Datasource for Authentication">
+		<config name="org.ops4j.datasource-shiro">
+			osgi.jdbc.driver.class=org.apache.derby.jdbc.EmbeddedDriver
+			dataSourceName=jdbc/shiro
+			url=jdbc:derby:data/shiro/derby;create=true
+		</config>
+		<capability>
+			osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/shiro
+		</capability>
+	</feature>
+
+	<feature name="shiro-labs-security" description="Shiro labs Karaf security" version="${project.version}">
+		<config name="fr.openobject.labs.shiro.karaf.security">
+			security.privateKey=
+			security.publicKey=
+			security.algorithm=RS512
+		</config>
+
+		<feature>eventadmin</feature>
+		<feature>scr</feature>
+		<feature version="${project.version}">shiro-datasource</feature>
+		<feature>transaction</feature>
+		<feature>jndi</feature>
+		<feature>jdbc</feature>
+		<feature>pax-jdbc-config</feature>
+		<feature>pax-jdbc-derby</feature>
+		<feature>pax-jdbc-pool-dbcp2</feature>
+		<feature dependency="true">aries-blueprint</feature>
+		<feature version="[2,3)">jpa</feature>
+		<feature version="[2,3)">eclipselink</feature>
+		<feature version="${cxf.version}">cxf-jaxrs</feature>
+		<feature version="${shiro.version}">shiro-core</feature>
+		<bundle dependency="true">mvn:org.apache.johnzon/johnzon-jaxrs/${johnzon.version}</bundle>
+		<bundle dependency="true">mvn:org.apache.johnzon/johnzon-mapper/${johnzon.version}</bundle>
+		<bundle dependency="true">mvn:org.apache.johnzon/johnzon-core/${johnzon.version}</bundle>
+		<bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-json_1.1_spec/${geronimo.jsonspec.version}</bundle>
+
+		<bundle>mvn:fr.openobject.shiro.labs/karaf-security/${project.version}</bundle>
+	</feature>
+
 	<feature name="shiro-labs-jaxrs" description="Shiro labs Karaf JAX-RS" version="${project.version}">
         <feature>eventadmin</feature>
 		<feature>scr</feature>
-
 		<feature dependency="true">transaction</feature>
 		<feature dependency="true">aries-blueprint</feature>
         <feature version="${cxf.version}">cxf-jaxrs</feature>

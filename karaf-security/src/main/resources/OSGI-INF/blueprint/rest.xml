@@ -21,16 +21,17 @@
 		</cxf:features>
 	</cxf:bus>
 
-	<bean id="protectedRestBean" class="jaxrs.ProtectedService" />
-	<bean id="shiroFeature" class="org.apache.shiro.web.jaxrs.ShiroFeature" />
+	<reference id="authenticateService" interface="fr.openobject.labs.shiro.karaf.security.api.AuthenticateService" />
+	<bean id="authenticateServiceRest" class="fr.openobject.labs.shiro.karaf.security.rest.AuthenticateServiceRest">
+		<property name="authenticateService" ref="authenticateService" />
+	</bean>
 
-	<jaxrs:server id="restServer" address="/shiro-jaxrs">
+	<jaxrs:server id="authenticateRestServer" address="/shiro-authenticate">
 		<jaxrs:serviceBeans>
-			<ref component-id="protectedRestBean" />
+			<ref component-id="authenticateServiceRest" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref component-id="jsonProvider" />
-			<ref component-id="shiroFeature" />
 		</jaxrs:providers>
 		<jaxrs:features>
 
