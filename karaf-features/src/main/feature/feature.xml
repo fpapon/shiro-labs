@@ -55,6 +55,11 @@
 	</feature>
 
 	<feature name="shiro-labs-jaxrs" description="Shiro labs Karaf JAX-RS" version="${project.version}">
+		<config name="fr.openobject.labs.shiro.karaf.jaxrs.jwtrealm">
+			security.publicKey=
+			security.algorithm=RS512
+		</config>
+
         <feature>eventadmin</feature>
 		<feature>scr</feature>
 		<feature dependency="true">transaction</feature>

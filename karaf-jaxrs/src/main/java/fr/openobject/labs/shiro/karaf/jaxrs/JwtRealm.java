@@ -16,18 +16,70 @@
  */
 package fr.openobject.labs.shiro.karaf.jaxrs;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Dictionary;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.BearerToken;
+import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.codec.Hex;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, name = "fr.openobject.labs.shiro.karaf.jaxrs.jwtrealm", service = JwtRealm.class)
 public class JwtRealm extends AuthorizingRealm {
+
+    private Logger logger = LoggerFactory.getLogger(JwtRealm.class);
+
+    private PublicKey publicKey;
+    private SignatureAlgorithm algorithm;
 
     public JwtRealm() {
         this.setAuthenticationTokenClass(BearerToken.class);
+    }
+
+    @Activate
+    public void activate(ComponentContext componentContext) throws Exception {
+
+        Dictionary<String, Object> properties = componentContext.getProperties();
+        String hexPublicKey = String.class.cast(properties.get("security.publicKey"));
+        String propAlgorithm = String.class.cast(properties.get("security.algorithm"));
+
+        if (propAlgorithm != null && !propAlgorithm.equals("")) {
+            this.algorithm = SignatureAlgorithm.forName(propAlgorithm);
+        } else {
+            logger.info("No signature algorithm found, using RS512...");
+            this.algorithm = SignatureAlgorithm.RS512;
+        }
+
+        if (hexPublicKey == null || hexPublicKey.equals("") ) {
+            logger.info("Missing public key configuration!");
+            throw new ConfigurationException("security.publicKey", "Missing public key");
+        }
+
+        X509EncodedKeySpec x509 = new X509EncodedKeySpec(Hex.decode(hexPublicKey));
+
+        this.publicKey = KeyFactory.getInstance(this.algorithm.getFamilyName()).generatePublic(x509);
+    }
+
+    @Deactivate
+    public void deactivate() {
+        // do nothing
     }
 
     @Override
@@ -39,6 +91,15 @@ public class JwtRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
 
-        return null;
+        SimpleAccount account = null;
+        BearerToken bearerToken = BearerToken.class.cast(authenticationToken);
+
+        if (bearerToken != null) {
+            Jws<Claims> jws = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(bearerToken.getToken());
+            if (jws != null && jws.getBody() != null) {
+                account = new SimpleAccount(jws.getBody().getSubject(), "", "SHIRO");
+            }
+        }
+        return account;
     }
 }

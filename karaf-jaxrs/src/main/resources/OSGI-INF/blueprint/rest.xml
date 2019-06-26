@@ -21,7 +21,7 @@
 		</cxf:features>
 	</cxf:bus>
 
-	<bean id="protectedRestBean" class="jaxrs.ProtectedService" />
+	<bean id="protectedRestBean" class="fr.openobject.labs.shiro.karaf.jaxrs.ProtectedService" />
 	<bean id="shiroFeature" class="org.apache.shiro.web.jaxrs.ShiroFeature" />
 
 	<jaxrs:server id="restServer" address="/shiro-jaxrs">

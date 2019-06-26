@@ -24,7 +24,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,6 @@ public class ProtectedService {
     @Path("infos")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    @RequiresRoles("admin")
     public Response getInfos() {
         Map<String, String> infos = new HashMap<>();
         Subject subject = SecurityUtils.getSubject();

@@ -88,8 +88,8 @@ public class ShiroService implements AuthenticateService {
             hexPublicKey = keys.get("public-key");
         }
 
-        X509EncodedKeySpec x509 = new X509EncodedKeySpec(Hex.decode(hexPublicKey));
         PKCS8EncodedKeySpec pkcs8 = new PKCS8EncodedKeySpec(Hex.decode(hexPrivateKey));
+        X509EncodedKeySpec x509 = new X509EncodedKeySpec(Hex.decode(hexPublicKey));
 
         this.privateKey = KeyFactory.getInstance(this.algorithm.getFamilyName()).generatePrivate(pkcs8);
         this.publicKey = KeyFactory.getInstance(this.algorithm.getFamilyName()).generatePublic(x509);
