@@ -19,11 +19,13 @@ package fr.openobject.labs.shiro.karaf.jaxrs;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +38,22 @@ public class ProtectedService {
     @Path("infos")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    public Response getInfos() {
+    public Response getInfos(@HeaderParam("Authorization") String token) {
+
         Map<String, String> infos = new HashMap<>();
         Subject subject = SecurityUtils.getSubject();
-        infos.put("is-authenticated", String.valueOf(subject.isAuthenticated()));
-        infos.put("user-principal", subject.getPrincipal().toString());
-        infos.put("session-id", SecurityUtils.getSubject().getSession().getId().toString());
-        return Response.ok(infos).build();
+        BearerToken bearerToken = new BearerToken(token);
+        subject.login(bearerToken);
+
+        if (subject.isAuthenticated()) {
+            infos.put("is-authenticated", String.valueOf(subject.isAuthenticated()));
+            infos.put("user-principal", subject.getPrincipal().toString());
+            infos.put("session-id", SecurityUtils.getSubject().getSession().getId().toString());
+            return Response.ok(infos).build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+
     }
 }

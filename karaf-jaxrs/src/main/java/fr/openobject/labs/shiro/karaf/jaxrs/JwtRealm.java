@@ -23,12 +23,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Dictionary;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authc.SimpleAccount;
+import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -75,6 +78,8 @@ public class JwtRealm extends AuthorizingRealm {
         X509EncodedKeySpec x509 = new X509EncodedKeySpec(Hex.decode(hexPublicKey));
 
         this.publicKey = KeyFactory.getInstance(this.algorithm.getFamilyName()).generatePublic(x509);
+
+        this.setCredentialsMatcher(new AllowAllCredentialsMatcher());
     }
 
     @Deactivate
@@ -95,8 +100,8 @@ public class JwtRealm extends AuthorizingRealm {
         BearerToken bearerToken = BearerToken.class.cast(authenticationToken);
 
         if (bearerToken != null) {
-            Jws<Claims> jws = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(bearerToken.getToken());
-            if (jws != null && jws.getBody() != null) {
+            Jws<Claims> jws = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(bearerToken.getToken().replaceFirst("Bearer ", ""));
+            if (jws != null && jws.getBody() != null && jws.getBody().getExpiration().after(Date.from(Instant.now()))) {
                 account = new SimpleAccount(jws.getBody().getSubject(), "", "SHIRO");
             }
         }

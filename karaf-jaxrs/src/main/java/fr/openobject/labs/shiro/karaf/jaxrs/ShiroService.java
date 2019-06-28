@@ -58,6 +58,7 @@ public class ShiroService {
 
         DefaultWebSecurityManager.class.cast(environment.getWebSecurityManager()).setSessionManager(sessionManager);
         DefaultWebSecurityManager.class.cast(environment.getWebSecurityManager()).setRealm(this.realm);
+
         SecurityUtils.setSecurityManager(environment.getWebSecurityManager());
 
         servletContext.setAttribute(EnvironmentLoader.ENVIRONMENT_ATTRIBUTE_KEY, environment);
