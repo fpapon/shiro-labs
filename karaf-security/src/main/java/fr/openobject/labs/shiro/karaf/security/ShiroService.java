@@ -128,10 +128,10 @@ public class ShiroService implements AuthenticateService {
         if (subject.isAuthenticated()) {
             JwtBuilder builder = Jwts.builder()
                     .setId(UUID.randomUUID().toString())
-                    .setIssuer("yupiik")
+                    .setIssuer("apache")
                     .setIssuedAt(new Date())
                     .setExpiration(Date.from(Instant.now().plus(30, ChronoUnit.DAYS)))
-                    .setAudience("soyouz")
+                    .setAudience("karaf-shiro")
                     .setSubject(subject.getPrincipal().toString())
                     .signWith(privateKey)
                     .compressWith(CompressionCodecs.GZIP);

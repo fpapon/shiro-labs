@@ -62,10 +62,10 @@ public class ProtectedServiceTest {
 
         JwtBuilder builder = Jwts.builder()
                 .setId(UUID.randomUUID().toString())
-                .setIssuer("yupiik")
+                .setIssuer("apache")
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(Instant.now().plus(30, ChronoUnit.DAYS)))
-                .setAudience("soyouz")
+                .setAudience("karaf-shiro")
                 .setSubject("john")
                 .signWith(loadPrivateKey)
                 .compressWith(CompressionCodecs.GZIP);
