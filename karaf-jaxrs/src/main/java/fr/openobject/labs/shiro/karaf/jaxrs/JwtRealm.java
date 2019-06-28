@@ -102,7 +102,7 @@ public class JwtRealm extends AuthorizingRealm {
         if (bearerToken != null) {
             Jws<Claims> jws = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(bearerToken.getToken().replaceFirst("Bearer ", ""));
             if (jws != null && jws.getBody() != null && jws.getBody().getExpiration().after(Date.from(Instant.now()))) {
-                account = new SimpleAccount(jws.getBody().getSubject(), "", "SHIRO");
+                account = new SimpleAccount(jws.getBody().getSubject(), jws.getBody().getId(), "SHIRO");
             }
         }
         return account;
