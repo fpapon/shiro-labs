@@ -43,7 +43,12 @@ public class ProtectedService {
         Map<String, String> infos = new HashMap<>();
         Subject subject = SecurityUtils.getSubject();
         BearerToken bearerToken = new BearerToken(token);
-        subject.login(bearerToken);
+
+        try {
+            subject.login(bearerToken);
+        } catch (Exception exception) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
 
         if (subject.isAuthenticated()) {
             infos.put("is-authenticated", String.valueOf(subject.isAuthenticated()));

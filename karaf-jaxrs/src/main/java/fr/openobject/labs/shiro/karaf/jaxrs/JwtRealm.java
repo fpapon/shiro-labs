@@ -26,6 +26,8 @@ import java.security.spec.X509EncodedKeySpec;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Dictionary;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -33,6 +35,7 @@ import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -90,6 +93,18 @@ public class JwtRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
 
+        Set<String> roles = new HashSet<>();
+        Set<String> permissions = new HashSet<>();
+
+        if (principalCollection != null && !principalCollection.isEmpty() && principalCollection.getPrimaryPrincipal() != null) {
+
+            // TODO get all roles and permissions from JWT
+            roles.add("admin");
+            SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+            info.setRoles(roles);
+            info.setStringPermissions(permissions);
+            return info;
+        }
         return null;
     }
 
@@ -100,9 +115,15 @@ public class JwtRealm extends AuthorizingRealm {
         BearerToken bearerToken = BearerToken.class.cast(authenticationToken);
 
         if (bearerToken != null) {
-            Jws<Claims> jws = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(bearerToken.getToken().replaceFirst("Bearer ", ""));
-            if (jws != null && jws.getBody() != null && jws.getBody().getExpiration().after(Date.from(Instant.now()))) {
-                account = new SimpleAccount(jws.getBody().getSubject(), jws.getBody().getId(), "SHIRO");
+            try {
+                Jws<Claims> jws = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(bearerToken.getToken().replaceFirst("Bearer ", ""));
+
+                if (jws != null && jws.getBody() != null && jws.getBody().getExpiration().after(Date.from(Instant.now()))) {
+                    account = new SimpleAccount(jws.getBody().getSubject(), jws.getBody().getId(), "SHIRO");
+                    logger.info(account.toString());
+                }
+            } catch (Exception exception) {
+                logger.warn("not a valid token!");
             }
         }
         return account;
