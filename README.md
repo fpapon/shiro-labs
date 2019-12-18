@@ -21,3 +21,74 @@
 This project is an example to show how to use Apache Shiro for a set of common use cases.
 
 
+## Test Instructions
+
+This instructions show you how to try on the resources from karaf-security project.
+
+### Building
+
+```
+git clone https://github.com/fpapon/shiro-labs.git
+cd shiro-labs
+mvn -Drat.skip=true -DskipTests install
+```
+
+### Install Features
+
+*Access Karaf console, add repo and install feature*
+
+```
+feature:repo-add mvn:fr.openobject.shiro.labs/karaf-features/1.0.0-SNAPSHOT/xml/features 
+feature:install shiro-labs-security
+```
+
+### Config Keys and Account
+
+*Generate private and public keys, and set properties*
+
+Where '$KARAF_HOME' is the Karaf Framework path.
+
+```
+shiro-labs:generate-keys
+```
+
+Copy private and public key, then set security.privateKey and security.publicKey properties on $KARAF_HOME/etc/fr.openobject.labs.shiro.karaf.security.cfg
+
+*Create an user account*
+
+```
+jdbc:execute jdbc/shiro "insert into SHIRO.USER_ACCOUNT(password, username, id, salt)values('karaf', 'karaf', '1', '1234')"
+```
+
+### Generate token
+
+*Generate token for user 'karaf' created*
+
+```
+shiro-labs:token-create karaf karaf
+```
+ 
+### Validate token
+
+*Try token*
+Where '$TOKEN' is the string generated from previous step, replace it.
+
+```
+shiro-labs:token-validate $TOKEN
+```
+
+### Generate and Validate a token via REST service
+
+*Generate a token*
+
+```
+curl -v -X POST -F 'username=karaf' -F 'password=karaf' http://localhost:8181/cxf/shiro-authenticate/token
+```
+
+*Validate a token*
+Where '$TOKEN' is a string generate previous. 
+
+```
+curl -v -H 'Authorization: Bearer $TOKEN' http://localhost:8181/cxf/shiro-authenticate/validate
+```
+
