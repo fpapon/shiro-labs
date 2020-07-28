@@ -20,14 +20,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import java.time.Instant;
-import java.util.Date;
-import java.util.Dictionary;
-import java.util.HashSet;
-import java.util.Set;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -36,7 +28,7 @@ import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.codec.Hex;
+import org.apache.shiro.lang.codec.Hex;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.osgi.service.cm.ConfigurationException;
@@ -46,6 +38,15 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.time.Instant;
+import java.util.Date;
+import java.util.Dictionary;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component(immediate = true, name = "fr.openobject.labs.shiro.karaf.jaxrs.jwtrealm", service = JwtRealm.class)
 public class JwtRealm extends AuthorizingRealm {

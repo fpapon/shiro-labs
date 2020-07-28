@@ -23,6 +23,9 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.apache.shiro.lang.codec.Hex;
+import org.junit.jupiter.api.Test;
+
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -35,8 +38,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
-import org.apache.shiro.codec.Hex;
-import org.junit.jupiter.api.Test;
 
 public class ProtectedServiceTest {
 

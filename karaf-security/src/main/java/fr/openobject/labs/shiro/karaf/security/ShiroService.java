@@ -25,6 +25,20 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.env.DefaultEnvironment;
+import org.apache.shiro.lang.codec.Hex;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -38,19 +52,6 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.codec.Hex;
-import org.apache.shiro.env.DefaultEnvironment;
-import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, name = "fr.openobject.labs.shiro.karaf.security")
 public class ShiroService implements AuthenticateService {
