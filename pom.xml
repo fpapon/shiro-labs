@@ -64,6 +64,7 @@
         <module>tomcat-web</module>
         <module>karaf-features</module>
         <module>karaf-security</module>
+        <module>springboot</module>
     </modules>
 
     <repositories>
